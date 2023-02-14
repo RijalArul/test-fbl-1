@@ -72,19 +72,21 @@ export default function HomePage () {
     }
   }
 
-  const handleDownload = (url, filename, e) => {
-    e.preventDefault()
-    axios
-      .post(
-        url,
-        { path: 'records.csv' },
-        {
-          responseType: 'blob'
-        }
-      )
-      .then(res => {
-        fileDownload(res.data, filename)
-      })
+  const handleDownload = async (url, filename) => {
+    // e.preventDefault()
+    const newDownload = {
+      path: filename
+    }
+    const response = await axios({
+      method: 'POST',
+      url: url,
+      data: newDownload,
+      headers: {
+        'Content-Disposition': filename
+      }
+    })
+
+    console.log(response)
   }
 
   return (
@@ -92,11 +94,11 @@ export default function HomePage () {
       <div>
         <h3>Transaction Table</h3>;
         <button
-          onClick={e => {
-            handleDownload('http://localhost:8080/downloads', 'records.csv', e)
+          onClick={() => {
+            handleDownload('http://localhost:8080/downloads', 'records.csv')
           }}
         >
-          Download Image
+          Download File
         </button>
         <table class='table'>
           <thead>
