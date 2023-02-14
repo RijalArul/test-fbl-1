@@ -27,13 +27,14 @@ func NewTransactionService(TransactionRepository repositories.TransactionReposit
 
 func TransactionResponseBody(transaction *entities.Transaction) webs.TransactionResponse {
 	return webs.TransactionResponse{
+		ID:            transaction.ID,
 		CreatedAt:     transaction.CreatedAt,
 		CompanyName:   transaction.CompanyName,
 		ProductName:   transaction.ProductName,
 		TotalQuantity: transaction.TotalQuantity,
 		Price:         transaction.Price,
 		TotalPrice:    transaction.TotalPrice,
-		RestStock:     transaction.Product.Stock - transaction.TotalQuantity,
+		RestStock:     transaction.Product.Stock,
 	}
 }
 

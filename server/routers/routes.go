@@ -15,44 +15,60 @@ import (
 	"test-fbl-1/server/repositories"
 	"test-fbl-1/server/services"
 
-	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm/clause"
 )
 
 type M map[string]interface{}
 
-func handleDownload(w http.ResponseWriter, r *http.Request) {
-	if err := r.ParseForm(); err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+// w http.ResponseWriter, r *http.Request
+func handleDownload(ctx *gin.Context) {
+	if err := ctx.Request.ParseForm(); err != nil {
+		http.Error(ctx.Writer, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	path := r.FormValue("path")
+	path := ctx.Request.FormValue("path")
 	fmt.Println(path)
 	f, err := os.Open(path)
 	if f != nil {
 		defer f.Close()
 	}
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Error(ctx.Writer, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
 	contentDisposition := fmt.Sprintf("attachment; filename=%s", f.Name())
-	w.Header().Set("Content-Disposition", contentDisposition)
+	ctx.Writer.Header().Set("Content-Disposition", contentDisposition)
 
-	if _, err := io.Copy(w, f); err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+	if _, err := io.Copy(ctx.Writer, f); err != nil {
+		http.Error(ctx.Writer, err.Error(), http.StatusInternalServerError)
 		return
+	}
+}
+
+func CORSMiddleware() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
+		c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
+		c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
+		c.Writer.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS, GET, PUT")
+
+		if c.Request.Method == "OPTIONS" {
+			c.AbortWithStatus(204)
+			return
+		}
+
+		c.Next()
 	}
 }
 
 func Routes() *gin.Engine {
 	r := gin.Default()
-	r.Use(cors.Default())
-
+	r.Use(CORSMiddleware())
 	DB := databases.GetDB()
+
 	var transactions []entities.Transaction
 	err := DB.Preload(clause.Associations).Model(transactions).Find(&transactions).Error
 	file, err := os.Create("records.csv")
@@ -68,6 +84,7 @@ func Routes() *gin.Engine {
 		data = append(data, row)
 	}
 	w.WriteAll(data)
+	r.POST("/downloads", handleDownload)
 
 	userRepository := repositories.NewUserRepository(DB)
 	userService := services.NewUserService(userRepository)
@@ -112,7 +129,6 @@ func Routes() *gin.Engine {
 		transactionRouter.POST("/", transactionController.Create)
 		transactionRouter.GET("/", transactionController.FindAll)
 	}
-	http.HandleFunc("/download", handleDownload)
 	r.Run()
 	return r
 }

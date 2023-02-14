@@ -9,6 +9,7 @@ type ProductDTO struct {
 }
 
 type ProductBodyResponse struct {
+	ID           uint        `json:"id"`
 	ProductName  string      `json:"product_name" form:"product_name"`
 	ProductSlug  string      `json:"product_slug" form:"product_slug"`
 	ProductPrice int         `json:"product_price" form:"product_price"`

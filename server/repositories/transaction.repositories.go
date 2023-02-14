@@ -51,7 +51,7 @@ func (r *TransactionRepositoryImpl) Create(transaction entities.Transaction, pro
 
 func (r *TransactionRepositoryImpl) FindAll() ([]entities.Transaction, error) {
 	var transactions []entities.Transaction
-	err := r.db.Preload(clause.Associations).Model(transactions).First(&transactions).Error
+	err := r.db.Preload(clause.Associations).Model(transactions).Find(&transactions).Error
 
 	return transactions, err
 }

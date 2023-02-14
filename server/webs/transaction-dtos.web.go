@@ -12,6 +12,7 @@ type TransactionDTO struct {
 
 type TransactionResponse struct {
 	CreatedAt     *time.Time `json:"created_at"`
+	ID            uint       `json:"id"`
 	CompanyName   string     `json:"company_name"`
 	ProductName   string     `json:"product_name"`
 	TotalQuantity int        `json:"total_quantity"`

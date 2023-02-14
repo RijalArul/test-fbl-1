@@ -28,6 +28,7 @@ func RepsonseCompanyBody(company *entities.Company) webs.RepsonseCompanyBody {
 
 func ResponseAllCompany(company *entities.Company) webs.RepsonseCompanyBody {
 	return webs.RepsonseCompanyBody{
+		ID:       company.ID,
 		Name:     company.Name,
 		Code:     company.Code,
 		Products: company.Products,
