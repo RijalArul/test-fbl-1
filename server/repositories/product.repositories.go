@@ -9,7 +9,8 @@ import (
 
 type ProductRepository interface {
 	Create(product entities.Product) (*entities.Product, error)
-	FindAll() ([]entities.Product, error)
+	FindAll(companyID uint) ([]entities.Product, error)
+	FindByID(productID uint) (*entities.Product, error)
 }
 
 type ProductRepositoryImpl struct {
@@ -25,8 +26,14 @@ func (r *ProductRepositoryImpl) Create(product entities.Product) (*entities.Prod
 	return &product, err
 }
 
-func (r *ProductRepositoryImpl) FindAll() ([]entities.Product, error) {
+func (r *ProductRepositoryImpl) FindAll(companyID uint) ([]entities.Product, error) {
 	var products []entities.Product
-	err := r.db.Model(products).Find(products).Error
+	err := r.db.Model(products).Where("company_id = ?", companyID).Find(products).Error
 	return products, err
+}
+
+func (r *ProductRepositoryImpl) FindByID(ProductID uint) (*entities.Product, error) {
+	var product entities.Product
+	err := r.db.Preload(clause.Associations).Model(product).Where("id = ?", ProductID).First(&product).Error
+	return &product, err
 }

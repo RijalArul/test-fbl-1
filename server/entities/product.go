@@ -7,14 +7,15 @@ import (
 
 type Product struct {
 	GormModel
-	Name      string `gorm:"not null;unique" valid:"required~Your Products Name is required"`
-	Slug      string `gorm:"not null" valid:"required~Your Products Slug Name is required"`
-	Price     int    `gorm:"not null" valid:"required~Your Price Products is required"`
-	Stock     int    `gorm:"not null" valid:"required~Your Product Stock is required"`
-	UserID    uint
-	CompanyID uint
-	User      *User
-	Company   *Company
+	Name         string `gorm:"not null;unique" valid:"required~Your Products Name is required"`
+	Slug         string `gorm:"not null" valid:"required~Your Products Slug Name is required"`
+	Price        int    `gorm:"not null" valid:"required~Your Price Products is required"`
+	Stock        int    `gorm:"not null" valid:"required~Your Product Stock is required"`
+	UserID       uint
+	CompanyID    uint
+	Transactions []Transaction `gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
+	User         *User
+	Company      *Company
 }
 
 func (p *Product) BeforeCreate(tx *gorm.DB) (err error) {

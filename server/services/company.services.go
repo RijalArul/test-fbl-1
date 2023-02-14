@@ -8,7 +8,7 @@ import (
 
 type CompanyService interface {
 	Create(companyDTO webs.CompanyDTO, userID uint) (webs.RepsonseCompanyBody, error)
-	FindAll() ([]entities.Company, error)
+	FindAll() ([]webs.RepsonseCompanyBody, error)
 }
 
 type CompanyServiceImpl struct {
@@ -26,6 +26,14 @@ func RepsonseCompanyBody(company *entities.Company) webs.RepsonseCompanyBody {
 	}
 }
 
+func ResponseAllCompany(company *entities.Company) webs.RepsonseCompanyBody {
+	return webs.RepsonseCompanyBody{
+		Name:     company.Name,
+		Code:     company.Code,
+		Products: company.Products,
+	}
+}
+
 func (s *CompanyServiceImpl) Create(companyDTO webs.CompanyDTO, userID uint) (webs.RepsonseCompanyBody, error) {
 	company := entities.Company{
 		Name:   companyDTO.CompanyName,
@@ -39,7 +47,14 @@ func (s *CompanyServiceImpl) Create(companyDTO webs.CompanyDTO, userID uint) (we
 	return respCompany, err
 }
 
-func (s *CompanyServiceImpl) FindAll() ([]entities.Company, error) {
+func (s *CompanyServiceImpl) FindAll() ([]webs.RepsonseCompanyBody, error) {
 	companies, err := s.companyRepository.FindAll()
-	return companies, err
+
+	newCompanies := []webs.RepsonseCompanyBody{}
+
+	for i := 0; i < len(companies); i++ {
+		company := ResponseAllCompany(&companies[i])
+		newCompanies = append(newCompanies, company)
+	}
+	return newCompanies, err
 }

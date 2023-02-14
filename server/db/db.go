@@ -37,7 +37,7 @@ func StartDB() {
 		panic(err)
 	}
 
-	DB.AutoMigrate(&entities.Product{}, &entities.Company{}, &entities.User{})
+	DB.AutoMigrate(&entities.Product{}, &entities.Company{}, &entities.User{}, &entities.Transaction{})
 }
 
 func GetDB() *gorm.DB {

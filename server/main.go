@@ -5,11 +5,6 @@ import (
 	"test-fbl-1/server/routers"
 )
 
-func main() {
-	databases.StartDB()
-	routers.Routes()
-}
-
 // import (
 // 	"encoding/csv"
 // 	"encoding/json"
@@ -115,3 +110,8 @@ func main() {
 // 	fmt.Println("server started at localhost:9000")
 // 	http.ListenAndServe(":9000", nil)
 // }
+
+func main() {
+	databases.StartDB()
+	routers.Routes()
+}

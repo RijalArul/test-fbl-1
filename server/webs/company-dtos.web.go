@@ -6,6 +6,7 @@ type CompanyDTO struct {
 }
 
 type RepsonseCompanyBody struct {
-	Name string `json:"company_name" form:"company_name"`
-	Code string `json:"company_code" form:"company_code"`
+	Name     string      `json:"company_name" form:"company_name"`
+	Code     string      `json:"company_code" form:"company_code"`
+	Products interface{} `json:"products"`
 }
