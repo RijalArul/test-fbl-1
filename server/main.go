@@ -2,10 +2,12 @@ package main
 
 import (
 	databases "test-fbl-1/server/db"
+	"test-fbl-1/server/routers"
 )
 
 func main() {
 	databases.StartDB()
+	routers.Routes()
 }
 
 // import (
