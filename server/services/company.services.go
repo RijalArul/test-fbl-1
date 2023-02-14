@@ -21,6 +21,7 @@ func NewCompanyService(CompanyRepository repositories.CompanyRepository) Company
 
 func RepsonseCompanyBody(company *entities.Company) webs.RepsonseCompanyBody {
 	return webs.RepsonseCompanyBody{
+		ID:   company.ID,
 		Name: company.Name,
 		Code: company.Code,
 	}
@@ -37,6 +38,7 @@ func ResponseAllCompany(company *entities.Company) webs.RepsonseCompanyBody {
 
 func (s *CompanyServiceImpl) Create(companyDTO webs.CompanyDTO, userID uint) (webs.RepsonseCompanyBody, error) {
 	company := entities.Company{
+
 		Name:   companyDTO.CompanyName,
 		Code:   companyDTO.CompanyCode,
 		UserID: userID,
